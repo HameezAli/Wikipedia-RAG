@@ -9,29 +9,18 @@ load_dotenv() # Load the api key
 index_dir = 'Wikipedia-RAG' # vector storage directory
 f1_terms = [
     "Formula One",
-    "History of Formula One",
-    "Formula One regulations",
     "Formula One car",
     "Formula One engine",
-    "Formula One tyres",
     "Formula One constructors",
     "Formula One drivers",
     "Formula One World Championship",
-    "FIA Formula One World Championship",
     "Formula One qualifying",
     "Max Verstappen",
-    "Formula One Grand Prix",
-    "List of Formula One Grands Prix",
+    "Formula One race weekend",
     "List of Formula One circuits",
     "List of Formula One World Drivers' Champions",
     "List of Formula One World Constructors' Champions",
-    "Pit stop",
-    "Safety car",
-    "DRS (Formula One)",
-    "Turbocharger",
-    "Hybrid electric vehicle",
     "Formula One Group",
-    "Bernie Ecclestone",
     "Lewis Hamilton"
 ]
 
