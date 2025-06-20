@@ -1,6 +1,6 @@
 import os
 import streamlit as st # to host the app
-from dotenv import load_dotenv # to load api key from .env
+# from dotenv import load_dotenv # to load api key from .env
 from llama_index.llms.openai import OpenAI # LLM 
 from llama_index.embeddings.openai import OpenAIEmbedding # embedding model for vector spaces
 from llama_index.readers.wikipedia import WikipediaReader # read data frm wikipedia articles
