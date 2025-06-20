@@ -5,7 +5,7 @@ from llama_index.llms.openai import OpenAI # LLM
 from llama_index.embeddings.openai import OpenAIEmbedding # embedding model for vector spaces
 from llama_index.readers.wikipedia import WikipediaReader # read data frm wikipedia articles
 from llama_index.core import VectorStoreIndex,StorageContext,load_index_from_storage # Vector data manipulation
-load_dotenv() # Load the api key
+# load_dotenv() # Load the api key
 index_dir = 'Wikipedia-RAG' # vector storage directory
 f1_terms = [
     "Formula One",
