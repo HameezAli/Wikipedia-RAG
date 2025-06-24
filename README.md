@@ -1,5 +1,5 @@
 # Wikipedia RAG
-App is now Live: https://wikipediarag.streamlit.app/
+# App is now Live: https://wikipediarag.streamlit.app/ <br>
 YT Video Link: https://youtu.be/M9GtHb32F8w?si=DaNO8IcfXsk5bP_J
 <hr>
 main.py does not work as it requires an OpenAI api key which is not free <br>
