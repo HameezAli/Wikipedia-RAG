@@ -1,7 +1,7 @@
 import os
 import streamlit as st
 import nest_asyncio
-
+import re
 from llama_index.llms.groq import Groq
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.readers.wikipedia import WikipediaReader
@@ -43,8 +43,10 @@ def get_index():
 def get_query_engine(groq_api_key: str):
     os.environ["GROQ_API_KEY"] = groq_api_key
     index = get_index()
-    llm = Groq(model="qwen-qwq-32b", api_key=groq_api_key)  # or use llama-3-70b for larger model
+    llm = Groq(model="qwen-qwq-32b", api_key=groq_api_key)  
     return index.as_query_engine(llm=llm, similarity_top_k=3)
+
+import re
 
 def main():
     st.title('🏁 Wikipedia RAG with Groq')
@@ -53,15 +55,44 @@ def main():
 
     if st.button('Submit', key='submit_btn') and question and groq_api_key:
         with st.spinner('Thinking...'):
-            qa = get_query_engine(groq_api_key)
-            response = qa.query(question)
+            try:
+                qa = get_query_engine(groq_api_key)
+                response = qa.query(question)
+            except Exception as e:
+                st.error(f"❌ Failed to get response: {e}")
+                return
 
+        raw_response = response.response
+
+        # Extract and remove <think>...</think> block
+        think_match = re.search(r"<think>(.*?)</think>", raw_response, re.DOTALL)
+        think_block = think_match.group(1).strip() if think_match else "No internal reasoning found."
+        cleaned_response = re.sub(r"<think>.*?</think>", "", raw_response, flags=re.DOTALL).strip()
+
+        # 📌 Answer
         st.subheader('📌 Answer')
-        st.write(response.response)
+        st.write(cleaned_response)
 
-        st.subheader('📚 Retrieved Contexts')
+        # 🧠 <think> Block
+        st.subheader('🧠 Internal Reasoning')
+        st.text(f"<think>\n{think_block}\n</think>")
+
+        st.subheader('📚 Retrieved Contexts (Subheadings Only)')
         for src in response.source_nodes:
-            st.markdown(src.node.get_content())
+            content = src.node.get_content()
+
+            # Extract subheadings like "== Heading ==" or "=== Subheading ==="
+            subheadings = re.findall(r"^={2,6}\s.*?\s={2,6}$", content, re.MULTILINE)
+
+            if subheadings:
+                st.markdown(f"**From: `{src.node.metadata.get('source', 'Unknown Source')}`**")
+                for heading in subheadings:
+                    # Convert wiki-style headings to readable text (strip =)
+                    clean_heading = re.sub(r"=+", "", heading).strip()
+                    st.markdown(f"- {clean_heading}")
+            else:
+                st.markdown(f"**From: `{src.node.metadata.get('source', 'Unknown Source')}`**")
+                st.markdown("_No subheadings found._")
 
 
 

@@ -40,7 +40,7 @@ def get_index():
 @st.cache_resource
 def get_query_engine():
     index = get_index()
-    llm = Ollama(model="llama3", temperature=0.7)  # make sure `ollama run llama3` is working
+    llm = Ollama(model="llama3.2", temperature=0.7)  # make sure `ollama run llama3` is working
     return index.as_query_engine(llm=llm, similarity_top_k=3)
 
 def main():
