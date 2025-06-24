@@ -8,3 +8,4 @@ transformers>=4.40.0
 torch>=2.2.0
 sentence-transformers>=2.6.1
 requests>=2.31.0
+wikipedia>=1.4.0
