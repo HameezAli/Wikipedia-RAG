@@ -8,10 +8,16 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.readers.wikipedia import WikipediaReader
 from llama_index.core import VectorStoreIndex, StorageContext, load_index_from_storage
 
+# Apply async patch
 nest_asyncio.apply()
+
+# Use your Groq API key directly here
+GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
+
+# Storage path
 index_dir = 'Wikipedia-RAG'
 
-# Session state for dynamic control
+# Session state setup
 if "index_loaded" not in st.session_state:
     st.session_state.index_loaded = False
 if "terms" not in st.session_state:
@@ -19,7 +25,6 @@ if "terms" not in st.session_state:
 
 # 🔧 Build or rebuild the index
 def build_index(terms):
-    # Always delete old index dir
     if os.path.exists(index_dir):
         shutil.rmtree(index_dir)
 
@@ -29,7 +34,7 @@ def build_index(terms):
     index.storage_context.persist(persist_dir=index_dir)
     return index
 
-# 🧠 Query Engine without caching
+# 🧠 Query Engine
 def get_query_engine(api_key, terms):
     os.environ["GROQ_API_KEY"] = api_key
     index = build_index(terms)
@@ -38,7 +43,8 @@ def get_query_engine(api_key, terms):
 
 # 🖥 Main UI
 def main():
-    st.title("🏁 Wikipedia RAG with Groq")
+    st.set_page_config(page_title="Wiki-RAG")
+    st.title("📘 Wiki-RAG")
 
     # Step 1: Get Wikipedia pages
     page_input = st.text_input("📚 Enter Wikipedia page name:")
@@ -53,13 +59,12 @@ def main():
 
     # Step 2: Ask Question
     if st.session_state.index_loaded:
-        groq_api_key = st.text_input("🔑 Enter your GROQ API Key:", type="password")
         question = st.text_input("💬 Ask a question about the loaded Wikipedia pages:")
 
-        if st.button("Submit", key="submit_btn") and question and groq_api_key:
+        if st.button("Submit", key="submit_btn") and question:
             with st.spinner("Thinking..."):
                 try:
-                    qa = get_query_engine(groq_api_key, st.session_state.terms)
+                    qa = get_query_engine(GROQ_API_KEY, st.session_state.terms)
                     response = qa.query(question)
                 except Exception as e:
                     st.error(f"❌ Error: {e}")
