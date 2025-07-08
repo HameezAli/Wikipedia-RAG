@@ -38,7 +38,7 @@ def build_index(terms):
 def get_query_engine(api_key, terms):
     os.environ["GROQ_API_KEY"] = api_key
     index = build_index(terms)
-    llm = Groq(model="qwen-qwq-32b", api_key=api_key)
+    llm = Groq(model="whisper-large-v3-turbo", api_key=api_key) # old model was qwen-qwq-32b
     return index.as_query_engine(llm=llm, similarity_top_k=3)
 
 # 🖥 Main UI
